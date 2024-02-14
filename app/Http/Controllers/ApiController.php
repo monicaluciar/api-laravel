@@ -24,14 +24,8 @@ class ApiController extends Controller
             'email' => 'email',
         ]);
         //agregar exception si falla la validacion
-        $condition = array();
-        if($request->has('email')){
-            $condition = ['email', $request->email] ;
-        }
-        elseif($request->has('dni')){
-            $condition = ['dni', $request->dni];
-        }
-        $query = Customers::select(
+        
+        $customer_query = Customers::select(
             'customers.name',
             'customers.last_name',
             'customers.address',
@@ -40,12 +34,17 @@ class ApiController extends Controller
             )
             ->join('regions', 'regions.id_reg', '=', 'customers.id_reg')
             ->join('communes', 'communes.id_com', '=', 'customers.id_com')
-            ->where('customers.status', 'A');
-
-        if($condition){
-            $query->where($condition[0], $condition[1]);
-        }
-        $customers = $query->get();
+            ->where(function ($query) use ($request) {
+                $query->where('customers.status', 'A');
+                if($request->has('email')){
+                    $query->where('customers.email', $request->email);
+                }
+                if($request->has('dni')){
+                    $query->where('customers.dni', $request->dni);
+                }
+            });
+        
+        $customers = $customer_query->get();
        
         $this->json_response['success'] = true;
         $this->json_response['data'] = $customers;
@@ -101,13 +100,18 @@ class ApiController extends Controller
         
     }
     public function deleteCustomer(Request $request){
-        $customer = Customers::where('email', $request->email)->where('status','!=','trash')->first();
-        //validar que esta activo o inactivo y si no, decir que no existe
+        $customer = Customers::where(function ($query) use ($request) {
+            $query->where('email', $request->email)
+                ->orWhere('dni', $request->dni);
+        })
+        ->where('status', '!=', 'trash')
+        ->first();
+
         if($customer){
             $customer->status = 'trash';
             $customer->save();
             $this->json_response['success'] = true;
-            return response()->json($this->json_response);
+            return response()->json($customer);
         }
 
         return response()->json(array_merge($this->json_response, ['error'=> 'Registro no existe']));
