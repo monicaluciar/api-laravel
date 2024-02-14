@@ -13,6 +13,9 @@ class Customers extends Model
 {
     use HasApiTokens, HasFactory, Notifiable;
     public $timestamps = false;
+    protected $primaryKey = 'dni';
+    public $incrementing = false;
+    protected $keyType = 'string';
     /**
      * The attributes that are mass assignable.
      *
