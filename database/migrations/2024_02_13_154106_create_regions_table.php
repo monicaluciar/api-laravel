@@ -12,11 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('regions', function (Blueprint $table) {
-            $table->id('id_com')->comment('');
-            $table->integer('id_reg')->comment('');
+            $table->id('id_reg')->comment('');
             $table->string('description', 90)->comment('');
             $table->enum('status', ['A', 'I', 'trash'])->default('A')->comment('Estado del registro: A - Activo, I - Desactivo, trash - Registro eliminado');
-            $table->index(['id_reg']);
         });
     }
 
