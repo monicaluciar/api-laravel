@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogginMiddleware
@@ -17,7 +17,8 @@ class LogginMiddleware
     public function handle(Request $request, Closure $next)
     {
         $ip = $request->ip();
-        Log::info("Solicitud desde la IP: $ip");
+        Log::channel('custom')->info("Solicitud desde la IP: $ip");
+        Log::info($request->all());
 
         return $next($request);
     }

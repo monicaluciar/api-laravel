@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customers;
+use App\Models\Regions;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -54,23 +55,12 @@ class ApiController extends Controller
     }
     public function createCustomer(Request $request){
 
-        $this->validate($request, [
-            'dni' => 'required|numeric',
-            'name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email',
-            'address' => 'string',
-            'region' => 'required|string',
-            'commune' => 'required|string'
-        ]);
-        //agregar exception si falla la validacion
-
         if(Customers::where('email', $request->email)->first() != null){
             return response()->json(array_merge($this->json_response, ['error'=> 'El email ya existe']));
         }else{
-            $region = \DB::table('regions')->where('description', $request->region)->first();
+            $region = Regions::where('description', $request->region)->first();
             if($region){
-                $commune_by_region = \DB::table('communes')
+                $commune_by_region = DB::table('communes')
                     ->join('regions','communes.id_reg','=','regions.id_reg')
                     ->where('communes.description',$request->commune)
                     ->where('communes.id_reg', $region->id_reg)
@@ -78,7 +68,7 @@ class ApiController extends Controller
                     ->first();
 
                 if($commune_by_region){
-                    $customer = Customers::create([   
+                    Customers::create([   
                         'dni' => $request->dni,
                         'id_reg' => $commune_by_region->id_reg,
                         'id_com' => $commune_by_region->id_com,
@@ -94,11 +84,8 @@ class ApiController extends Controller
                 return response()->json(array_merge($this->json_response, ['error'=> 'La comuna no existe o no pertenece a esa region']));                
             }else{
                 return response()->json(array_merge($this->json_response, ['error'=> 'La region no existe']));
-            }
-            
+            }            
         }
-
-
         
     }
     public function deleteCustomer(Request $request){
@@ -116,7 +103,7 @@ class ApiController extends Controller
             return response()->json($customer);
         }
 
-        return response()->json(array_merge($this->json_response, ['error'=> 'Registro no existe']));
+        return response()->json(array_merge($this->json_response, ['error'=> 'Registro no existe']),404);
     }
 
   

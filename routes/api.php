@@ -19,7 +19,7 @@ use App\Http\Controllers\ApiController;
 */
 
 
-Route::middleware('api.key')->group(function () {
+Route::middleware(['api.key','validator', 'logger'])->group(function () {
     Route::post('/auth/register', [AuthController::class, 'create']);
     Route::post('/auth/login', [AuthController::class, 'login']);
     Route::get('/customers', [ApiController::class, 'getCustomers']);
