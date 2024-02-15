@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,12 +18,26 @@ use App\Http\Controllers\ApiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::middleware('api.key')->group(function () {
+    Route::post('/auth/register', [AuthController::class, 'create']);
+    Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::get('/customers', [ApiController::class, 'getCustomers']);
+    Route::post('/customer', [ApiController::class, 'createCustomer']);
+    Route::delete('/customer', [ApiController::class, 'deleteCustomer']);
 });
 
-Route::get('/customers', [ApiController::class, 'getCustomers']);
-Route::post('/customer', [ApiController::class, 'createCustomer']);
-Route::delete('/customer', [ApiController::class, 'deleteCustomer']);
-Route::post('/login', [ApiController::class, 'login']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/customers', [ApiController::class, 'getCustomers']);
+    Route::post('/customer', [ApiController::class, 'createCustomer']);
+    Route::delete('/customer', [ApiController::class, 'deleteCustomer']);
+});
+// Route::middleware('sql.injection')->group(function () {
+//     Route::post('/auth/register', [AuthController::class, 'create']);
+//     Route::post('/auth/login', [AuthController::class, 'login']);
+//     Route::post('/customer', [ApiController::class, 'createCustomer']);
+
+// });
+
+
 

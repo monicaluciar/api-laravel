@@ -7,6 +7,7 @@ use GrahamCampbell\ResultType\Success;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
@@ -19,6 +20,7 @@ class ApiController extends Controller
     ];
     public function getCustomers( Request $request)
     {
+        Log::info('getCustomers');
         $this->validate($request, [
             'dni' => 'numeric',
             'email' => 'email',
@@ -117,19 +119,5 @@ class ApiController extends Controller
         return response()->json(array_merge($this->json_response, ['error'=> 'Registro no existe']));
     }
 
-    // public function login(Request $request){
-    //     $response = [
-    //         "status" => false,
-    //         "message" => "Invalid credentials"
-    //     ];
-
-    //     $data = json_decode($request->getContent(), true);
-
-    //     $customer = Customers::where('email', $request->email)->first();
-    //     if($customer && Hash::check($request->password, $customer->password)){
-    //         return response()->json($customer);
-    //     }else{
-    //         return response()->json(['error' => 'Invalid credentials']);
-    //     }
-    // }
+  
 }
