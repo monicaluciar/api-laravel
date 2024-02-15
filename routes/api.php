@@ -25,6 +25,7 @@ Route::middleware('api.key')->group(function () {
     Route::get('/customers', [ApiController::class, 'getCustomers']);
     Route::post('/customer', [ApiController::class, 'createCustomer']);
     Route::delete('/customer', [ApiController::class, 'deleteCustomer']);
+    
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
