@@ -33,12 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/customer', [ApiController::class, 'createCustomer']);
     Route::delete('/customer', [ApiController::class, 'deleteCustomer']);
 });
-// Route::middleware('sql.injection')->group(function () {
-//     Route::post('/auth/register', [AuthController::class, 'create']);
-//     Route::post('/auth/login', [AuthController::class, 'login']);
-//     Route::post('/customer', [ApiController::class, 'createCustomer']);
 
-// });
 
 
 

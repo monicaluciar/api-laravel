@@ -47,7 +47,7 @@ class AuthController extends Controller
        
         return response()->json([
             'success'=> true,
-            'token' => $user->createToken($ticket_token,['*'],now()->addHour(1))->plainTextToken
+            'token' => $user->createToken($ticket_token,['*'],now()->addMinutes(config('sanctum.expiration')))->plainTextToken
         ]);
         
     }

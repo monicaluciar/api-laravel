@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Communes;
 use App\Models\Customers;
 use App\Models\Regions;
 use GrahamCampbell\ResultType\Success;
