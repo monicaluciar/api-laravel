@@ -9,7 +9,7 @@ Una api para consultar y registrar clientes por regiones y comunas de Chile
 
 ### **Conventions**
 
-La URL base para enviar los API request es `https://localhost/api`
+La URL base para enviar los API request es `http://localhost/api`
 
 La API sigue las convenciones que sean posibles. Las solicitudes se realizan mediante los metodos `GET`, `POST` and `DELETE`. Las solicitudes y respuestas estan codificadas en formato JSON.
 
@@ -39,14 +39,16 @@ alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
 
 Para asegurarte de que esto está siempre disponible, puedes añadirlo al archivo de configuración de tu shell en tu directorio personal, como `~/.zshrc` o `~/.bashrc`, y luego reiniciar tu shell.
 
-Una vez configurado el alias de shell, puede ejecutar comandos Sail simplemente escribiendo sail. El resto de los ejemplos de esta documentación asumirán que has configurado este alias:
+Una vez configurado el alias de shell, puede ejecutar comandos Sail simplemente escribiendo `sail`. El resto de los ejemplos de esta documentación asumirán que has configurado este alias:
 
 ```
-sail up
+    sail up
 ```
 </aside>
 4. Generar una key
-```sail artisan key:generate
+
+```
+    sail artisan key:generate
 ```
 
 # Migraciones
@@ -69,8 +71,8 @@ Ejecute los siguientes comandos para crear la data de regiones y comunas para lo
 
 | HTTP method | Endpoint |
 | --- | --- |
-| GET | Lista de clientes |
-| GET | Obtener la informacion de un cliente |
+| POST| Registrar un nuevo cliente |
+| GET | Obtener la informacion de los clientes |
 | DELETE | Eliminar un cliente |
 | POST | Registrar un usuario |
 | POST | Iniciar sesion para obtener un token |
@@ -107,10 +109,13 @@ Endpoints que no requieren autenticacion
 
 # Registrar un nuevo usuario
 
-Category: Authentication
-Description: Crear un nuevo usuario para utilizar el servicio
-Type: POST
-URL: https://localhost/api/auth/register
+**Category:** Authentication
+
+**Description:** Crear un nuevo usuario para utilizar el servicio
+
+**Type:** POST
+
+**URL:** https://localhost/api/auth/register
 
 ### Headers request
 
@@ -131,13 +136,15 @@ URL: https://localhost/api/auth/register
 ### Responses
 
 **Status 200**
-```{
+```
+{
     "success": true,
     "message": "Usario creado exitosamente"
 }
 ```
 **Status 422**
-```{
+```
+{
     "success": false,
     "error": {}
 }
@@ -145,10 +152,13 @@ URL: https://localhost/api/auth/register
 
 # Iniciar sesion
 
-Category: Authentication
-Description: Crear un nuevo usuario para utilizar el servicio
-Type: POST
-URL: https://localhost/api/auth/register
+**Category:** Authentication
+
+**Description:** Iniciar sesion para obtener un token 
+
+**Type:** POST
+
+**URL:** http://localhost/api/auth/login
 
 ### Headers request
 
@@ -169,22 +179,25 @@ URL: https://localhost/api/auth/register
 ### Responses
 
 **Status 200**
-```{
-    "success": true,
-    "token": TOKEN
-}
+```
+    {
+        "success": true,
+        "token": TOKEN
+    }
 ```
 **Status 401**
-```{
-    "success": false,
-    "error": "No autorizado"
+```
+    {
+        "success": false,
+        "error": "No autorizado"
     }
 ```
 **Status 422**
-```{
-    "success": false,
-    "error": {}
-}
+```
+    {
+        "success": false,
+        "error": {}
+    }
 ```
 
 ## Endpoints que requieren autenticación
@@ -192,12 +205,15 @@ URL: https://localhost/api/auth/register
 Los endpoints cerrados requieren que se incluya un Token válido en la cabecera de la
 solicitud. Se puede adquirir un token desde el endpoint de inicio de sesión anterior.
 
-# Consultar clients
+# Consultar clientes
 
-Category: Cliente
-Description: Crear un nuevo usuario para consultar los clientes
-Type: GET
-URL: https://localhost/api/customers
+**Category:** Cliente
+
+**Description:** Consultar clientes
+
+**Type:** GET
+
+**URL:** http://localhost/api/customers
 
 ### Authorization
 
@@ -210,6 +226,14 @@ Bearer Token
 | x-api-key  | API_KEY
 | accept| application\json |
 |  |  |  
+
+### Body Params
+
+| Name | Type | Required? | Description |
+| --- | --- | --- | --- |
+| dni| string | false |  |
+| email| string | false|  |
+|  |  |  |  |
 
 
 ### Responses
@@ -239,7 +263,8 @@ Bearer Token
 }
 ```
 **Status 401**
-```{
+```
+{
     "message": "Unauthenticated."
 }
 ```
@@ -247,8 +272,11 @@ Bearer Token
 # Crear un cliente
 
 Category: Cliente
+
 Description: Crear un cliente
+
 Type: POST
+
 URL: https://localhost/api/customer
 
 ### Authorization
@@ -273,34 +301,40 @@ Bearer Token
 |  email| string(email)  | true |  |
 |  address| string | false |  |
 |  region|string  | true |  |
-|  comuna| string |  true|  |
+|  commune| string |  true|  |
 
 ### Responses
 
 **Status 200**
-```{
-    "success": true,
-}
+```
+    {
+        "success": true,
+    }
 ```
 **Status 401**
-```{
-    "success": false,
-    "error": "No autorizado"
+```
+    {
+        "success": false,
+        "error": "No autorizado"
     }
 ```
 **Status 422**
-```{
-    "success": false,
-    "error": {}
-}
+```
+    {
+        "success": false,
+        "error": {}
+    }
 ```
 
 # Eliminar un cliente
 
-Category: Cliente
-Description: Eliminar un cliente por dni o email
-Type: DELETE
-URL: https://localhost/api/customer
+**Category:** Cliente
+
+**Description:** Eliminar un cliente por dni o email
+
+**Type:** DELETE
+
+**URL:** http://localhost/api/customer
 
 ### Authorization
 
@@ -325,19 +359,22 @@ Bearer Token
 ### Responses
 
 **Status 200**
-```{
-    "success": true,
-}
+```
+    {
+        "success": true,
+    }
 ```
 **Status 401**
-```{
-    "success": false,
-    "error": "No autorizado"
+```
+    {
+        "success": false,
+        "error": "No autorizado"
     }
 ```
 **Status 404**
-```{
-    "success": false,
-    "error": "El registro no existe"
-}
+```
+    {
+        "success": false,
+        "error": "El registro no existe"
+    }
 ```
